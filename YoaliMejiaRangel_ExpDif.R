@@ -33,26 +33,30 @@ s2c <- data.frame(path=kal_dirs, sample=samples, muestras=c("control","control",
 s2c #se asigna el control y mutantes para que sean comparados. Los controles son los primeros 3 archivos y las mutantes los últimos 3
 so <- sleuth_prep(s2c, ~muestras, target_mapping = t2g,extra_bootstrap_summary = TRUE) #este vector ayuda a normalizar los datos
 #se lleva a cabo el bootstrap , normalización de los datos . Datos son leídos en kallisto 
-so <- sleuth_fit(so)
+so <- sleuth_fit(so) #target id's por ejemplo: ENST00000597118
 so <- sleuth_wt(so, which_beta="muestrasmuted") #condición de referencia, comparadas con las mutantes                  
 sleuth_live(so)
 #library (shiny) #se necesita cargar a la librería shiny para realizar el siguiente análisis
 #se abre una nueva ventana arrojando los resultados, heatmaps, volcano plots, tablas, etc. 
+#en esta pestaña, se observa un heatmap, volcano plot, tablas con el target id, mean, varianza, etc. 
 
-setwd("6to semestre/Genómica/samples/") #nuevamente se cambia de directorio para nuestra carpeta con los archivos 
+setwd("C:/Users/HP/Documents/6to semestre/Genómica/samples") #nuevamente se cambia de directorio para nuestra carpeta con los archivos 
 
 #una vez que se abre la pestaña con los resultaods (para esto la librería shiny), se descarga la tabla de test table
 #y se carga en R para realizar los análisis siguientes : 
 resultados<-read.table("test_table.csv",sep=",",
-                       header=TRUE) #aquí se carga el archivo descargado 
+                       header=TRUE) #aquí se carga el archivo descargado en formato csv separado por comas
 significativos<-which(resultados$qval<0.1) #separa a los resultados con base en un q valor<0.1
-significativos<-resultados[significativos,] #muestra los genes que son significativos
+significativos<-resultados[significativos,]
+significativos #muestra el valor de los genes que son significativos en forma de tabla 
 upregulated<-which(significativos$b>0) #muestra los genes más regulados 
 upregulated<-significativos[upregulated,]
+upregulated #muestra los valores de los  genes más regulados de los genes significativos 
 downregulated<-which(significativos$b<0) #muestra los genes menos regulados con base en los análisis 
 downregulated<-significativos[downregulated,]
+downregulated #muestra los genes menos regulados con base en los análisis de los genes significativos
 
-write.table(upregulated,file="~/6to semestre/Genómica/samples/Upregulated_N2vsCyg-25.txt",sep="\t")
-write.table(downregulated,file="~/6to semestre/Genómica/samples/Downregulated_N2vsCyg-25.txt",sep="\t")
+write.table(upregulated,file="C:/Users/HP/Documents/6to semestre/Genómica/samples/Upregulated_N2vsCyg-25.txt",sep="\t")
+write.table(downregulated,file="C:/Users/HP/Documents/6to semestre/Genómica/samples/Downregulated_N2vsCyg-25.txt",sep="\t")
 
-upregulated$ext_gene
+upregulated$ext_gene #se muestra una lista de ID's de gene, ejemplo:"PSCA","NABP1","UCA1","DDIT4" 
